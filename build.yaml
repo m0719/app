@@ -1,0 +1,30 @@
+# Azure Pipeline YAML file for building and testing a project with CSS and HTML
+
+trigger:
+- master  # Branch to trigger the build on
+
+pool:
+  vmImage: 'windows-latest'  # Use a Windows agent, adjust as needed
+
+jobs:
+- job: BuildAndTest
+  displayName: 'Build and Test'
+  steps:
+  - checkout: self
+
+  - task: UseNode@1
+    inputs:
+      version: '12.x'
+    displayName: 'Install Node.js'
+
+  - script: npm install
+    displayName: 'Install npm packages'
+
+  - script: npm run build
+    displayName: 'Build CSS and HTML'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(System.DefaultWorkingDirectory)'
+      artifactName: 'drop'
+      publishLocation: 'Container'
